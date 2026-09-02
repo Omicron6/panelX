@@ -1,0 +1,27 @@
+# Python
+.venv/
+.venv-*/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+frontend/build/
+
+# Env files (contain secrets — do NOT commit)
+.env
+backend/.env
+frontend/.env
+
+# Logs
+*.log
+
+# Editor/OS
+.DS_Store
+*.crswap
+Thumbs.db
+
+# Local data
+frontend/intel storage
