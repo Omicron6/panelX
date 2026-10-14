@@ -5,11 +5,13 @@ Analyzes job description and candidate resume to build interview context
 
 import logging
 import requests
+import boto3
 from typing import Dict, List
 from datetime import datetime
 from ..config import (
     LLM_PROVIDER, LLM_PROVIDER_ORDER, REQUESTY_API_KEY, REQUESTY_MODEL_ID, REQUESTY_BASE_URL,
-    DEEPSEEK_API_KEY, DEEPSEEK_MODEL_ID, DEEPSEEK_BASE_URL, MAX_TOKENS, TEMPERATURE
+    DEEPSEEK_API_KEY, DEEPSEEK_MODEL_ID, DEEPSEEK_BASE_URL, AWS_REGION, BEDROCK_MODEL_ID,
+    MAX_TOKENS, TEMPERATURE, TOP_P
 )
 
 logger = logging.getLogger(__name__)
@@ -19,13 +21,14 @@ def call_llm(prompt: str, max_tokens: int = MAX_TOKENS, temperature: float = TEM
     providers = {
         "deepseek": (DEEPSEEK_API_KEY, DEEPSEEK_MODEL_ID, DEEPSEEK_BASE_URL),
         "requesty": (REQUESTY_API_KEY, REQUESTY_MODEL_ID, REQUESTY_BASE_URL),
+        "bedrock": (None, BEDROCK_MODEL_ID, None),
     }
     if LLM_PROVIDER == "auto":
         provider_order = LLM_PROVIDER_ORDER
     elif LLM_PROVIDER in providers:
         provider_order = [LLM_PROVIDER]
     else:
-        raise RuntimeError("LLM_PROVIDER must be 'requesty', 'deepseek', or 'auto'.")
+        raise RuntimeError("LLM_PROVIDER must be 'requesty', 'deepseek', 'bedrock', or 'auto'.")
 
     errors = []
     for provider in provider_order:
@@ -33,10 +36,31 @@ def call_llm(prompt: str, max_tokens: int = MAX_TOKENS, temperature: float = TEM
             errors.append(f"Unknown provider '{provider}' in LLM_PROVIDER_ORDER")
             continue
         api_key, model_id, base_url = providers[provider]
-        if not api_key:
+        if provider != "bedrock" and not api_key:
             errors.append(f"{provider} key is not configured")
             continue
         try:
+            if provider == "bedrock":
+                client = boto3.client("bedrock-runtime", region_name=AWS_REGION)
+                response = client.converse(
+                    modelId=model_id,
+                    messages=[{"role": "user", "content": [{"text": prompt}]}],
+                    inferenceConfig={
+                        "maxTokens": max_tokens,
+                        "temperature": temperature,
+                        "topP": TOP_P,
+                    },
+                )
+                content = "".join(
+                    part.get("text", "")
+                    for part in response.get("output", {}).get("message", {}).get("content", [])
+                    if isinstance(part, dict)
+                ).strip()
+                if not content:
+                    raise RuntimeError("Bedrock returned an empty response")
+                logger.info("LLM request succeeded using %s (%s)", provider, model_id)
+                return content
+
             response = requests.post(
                 f"{base_url.rstrip('/')}/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},

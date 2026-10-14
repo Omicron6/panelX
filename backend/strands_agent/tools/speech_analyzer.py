@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 
 import boto3
+from ..config import AWS_REGION
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class SpeechAnalyzer:
     """
 
     def __init__(self, transcribe_client=None):
-        self.transcribe_client = transcribe_client or boto3.client('transcribe')
+        self.transcribe_client = transcribe_client or boto3.client('transcribe', region_name=AWS_REGION)
         self.transcribed_cache = {}  # Track transcriptions to avoid re-processing
 
     def transcribe_audio_chunk(self, audio_base64: str) -> Dict[str, Any]:

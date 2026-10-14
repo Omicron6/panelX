@@ -13,6 +13,7 @@ AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN")
+BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "apac.amazon.nova-pro-v1:0")
 REQUESTY_API_KEY = os.getenv("REQUESTY_API_KEY")
 REQUESTY_MODEL_ID = os.getenv("REQUESTY_MODEL_ID", "google/gemma-4-31b-it")
 REQUESTY_BASE_URL = os.getenv("REQUESTY_BASE_URL", "https://router.requesty.ai/v1")
@@ -21,11 +22,14 @@ LLM_PROVIDER_ORDER = [p.strip().lower() for p in os.getenv("LLM_PROVIDER_ORDER",
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_MODEL_ID = os.getenv("DEEPSEEK_MODEL_ID", "deepseek-flash")
 DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
-ACTIVE_MODEL_ID = (
-    f"{DEEPSEEK_MODEL_ID} (DeepSeek) → {REQUESTY_MODEL_ID} (Requesty) fallback"
-    if LLM_PROVIDER == "auto"
-    else DEEPSEEK_MODEL_ID if LLM_PROVIDER == "deepseek" else REQUESTY_MODEL_ID
-)
+if LLM_PROVIDER == "auto":
+    ACTIVE_MODEL_ID = f"{DEEPSEEK_MODEL_ID} (DeepSeek) → {REQUESTY_MODEL_ID} (Requesty) fallback"
+elif LLM_PROVIDER == "deepseek":
+    ACTIVE_MODEL_ID = DEEPSEEK_MODEL_ID
+elif LLM_PROVIDER == "bedrock":
+    ACTIVE_MODEL_ID = f"{BEDROCK_MODEL_ID} (Amazon Bedrock)"
+else:
+    ACTIVE_MODEL_ID = f"{REQUESTY_MODEL_ID} (Requesty)"
 
 # Application Configuration
 # Default output budget for Requesty-backed model calls.
