@@ -100,7 +100,7 @@ Write a brief, professional 2-3 sentence summary of the candidate's overall perf
 Be balanced and constructive."""
 
     try:
-        ai_summary = call_llm(summary_prompt, max_tokens=150, temperature=0.5)
+        ai_summary = call_llm(summary_prompt, max_tokens=512, temperature=0.5)
         summary = ai_summary[:400]
     except Exception as e:
         logger.error(f"Error generating AI summary: {e}")

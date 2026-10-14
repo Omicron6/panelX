@@ -8,14 +8,27 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# AWS Bedrock Configuration
+# AWS Configuration
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-BEDROCK_MODEL_ID = os.getenv("BEDROCK_MODEL_ID", "meta.llama3-8b-instruct-v1:0")
+AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN")
+REQUESTY_API_KEY = os.getenv("REQUESTY_API_KEY")
+REQUESTY_MODEL_ID = os.getenv("REQUESTY_MODEL_ID", "google/gemma-4-31b-it")
+REQUESTY_BASE_URL = os.getenv("REQUESTY_BASE_URL", "https://router.requesty.ai/v1")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "requesty").strip().lower()
+LLM_PROVIDER_ORDER = [p.strip().lower() for p in os.getenv("LLM_PROVIDER_ORDER", "deepseek,requesty").split(",") if p.strip()]
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_MODEL_ID = os.getenv("DEEPSEEK_MODEL_ID", "deepseek-flash")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+ACTIVE_MODEL_ID = (
+    f"{DEEPSEEK_MODEL_ID} (DeepSeek) → {REQUESTY_MODEL_ID} (Requesty) fallback"
+    if LLM_PROVIDER == "auto"
+    else DEEPSEEK_MODEL_ID if LLM_PROVIDER == "deepseek" else REQUESTY_MODEL_ID
+)
 
 # Application Configuration
-# Kept modest to reduce Bedrock token-per-minute throttling.
+# Default output budget for Requesty-backed model calls.
 MAX_TOKENS = 512
 TEMPERATURE = 0.7
 TOP_P = 0.9

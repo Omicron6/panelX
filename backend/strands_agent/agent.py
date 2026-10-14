@@ -12,7 +12,7 @@ from .tools.question_generator import generate_question
 from .tools.answer_evaluator import evaluate_answer
 from .tools.behavior_analyzer import analyze_behavior
 from .tools.decision_engine import make_decision
-from .config import AGENT_NAME, AGENT_VERSION, AGENT_TYPE, MAX_QUESTIONS
+from .config import AGENT_NAME, AGENT_VERSION, AGENT_TYPE, MAX_QUESTIONS, ACTIVE_MODEL_ID, LLM_PROVIDER
 
 logger = logging.getLogger(__name__)
 
@@ -291,7 +291,7 @@ def get_agent_info() -> Dict:
         "name": AGENT_NAME,
         "version": AGENT_VERSION,
         "type": AGENT_TYPE,
-        "model": "Meta Llama 3 8B (AWS Bedrock)",
+        "model": f"{ACTIVE_MODEL_ID} ({LLM_PROVIDER.title()})",
         "architecture": "Modular Tool-Based",
         "capabilities": [
             "Real-time question generation",

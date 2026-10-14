@@ -89,11 +89,11 @@ FEEDBACK: Solid technical explanation, but add concrete examples to strengthen i
         }
 
     try:
-        evaluation_text = call_llm(prompt, max_tokens=300, temperature=0.3)
+        evaluation_text = call_llm(prompt, max_tokens=1024, temperature=0.3)
         # Retry once if the first response is unusable (transient empty responses)
         if not evaluation_text or len(evaluation_text.strip()) < 10:
             logger.warning("Empty evaluation response; retrying once...")
-            evaluation_text = call_llm(prompt, max_tokens=300, temperature=0.4)
+            evaluation_text = call_llm(prompt, max_tokens=1024, temperature=0.4)
         
         # Parse the evaluation with improved logic
         score = 5  # default

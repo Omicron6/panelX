@@ -348,19 +348,15 @@ const Interview = () => {
   };
 
   const fetchNextQuestion = async (currentSessionId, questionNumber) => {
+    // Keep these available to both the request and its error fallback.
+    const qNum = questionNumber || currentQuestionRef.current;
+    const isLast = qNum >= totalQuestionsFromAgent;
+    const questionType = isLast ? 'coding' : 'theoretical';
+    const difficulty = sessionDifficulty;
+
     try {
       const apiRoot = getApiBase();
       setIsLoadingQuestion(true);
-
-      // Use the passed question number (fresh) or fall back to the ref.
-      const qNum = questionNumber || currentQuestionRef.current;
-
-      // Last question is a coding challenge; the first questions are theoretical.
-      const isLast = qNum >= totalQuestionsFromAgent;
-      const questionType = isLast ? 'coding' : 'theoretical';
-
-      // Difficulty is driven by the session setting (easy for demos).
-      const difficulty = sessionDifficulty;
 
       const response = await fetch(`${apiRoot}/interview/question`, {
         method: 'POST',
@@ -402,6 +398,9 @@ const Interview = () => {
       setCurrentEvaluation(null);
       setIsLoadingQuestion(false);
       return fallbackQuestion;
+    } finally {
+      // Never strand the interview behind the loading overlay after a failed fetch.
+      setIsLoadingQuestion(false);
     }
   };
 

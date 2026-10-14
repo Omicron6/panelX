@@ -339,7 +339,7 @@ async def preview_questions(request: InterviewPreviewRequest):
 
         return {
             "status": "ok",
-            "generation_source": "strands_tools",
+            "generation_source": "configured_provider",
             "company_type": request.company_type,
             "interview_type": normalized_type,
             "question_count": request.question_count,

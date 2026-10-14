@@ -8,6 +8,7 @@ import uuid
 from typing import Dict, List, Optional
 from datetime import datetime
 from .context_builder import call_llm
+from ..config import LLM_PROVIDER
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +109,9 @@ Generate ONE interview question following the DIFFICULTY and QUESTION TYPE rules
 Return ONLY the question text, nothing else."""
 
     try:
-        raw_response = call_llm(prompt, max_tokens=200, temperature=0.8)
+        # Gemma may spend some output tokens on internal reasoning; allow enough
+        # room for the actual question to be returned as well.
+        raw_response = call_llm(prompt, max_tokens=512, temperature=0.8)
 
         raw = (raw_response or "").strip()
 
@@ -242,7 +245,7 @@ Return ONLY the question text, nothing else."""
             "generated_at": datetime.utcnow().isoformat(),
             "context_role": role,
             "company_type": company_type,
-            "generation_source": "strands_tools"
+            "generation_source": LLM_PROVIDER
         }
         
         logger.info(f"Question generated: {question['id'][:8]}...")
