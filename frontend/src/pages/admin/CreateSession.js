@@ -198,8 +198,7 @@ const CreateSession = () => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-white font-semibold">
                   <Upload className="w-5 h-5 text-purple-300" />
-                  <span>Upload job description PDF</span>
-                  <span className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">Coming soon</span>
+                  <span>Upload PDF instead</span>
                 </div>
                 <p className="mt-1 text-sm text-gray-400">
                   PDF upload and question generation from the file are not connected yet. Paste the description above for now.
