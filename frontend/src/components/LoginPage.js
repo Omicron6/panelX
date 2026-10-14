@@ -1,150 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, Mic, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-
-const SecurityVisualization = () => {
-  return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden opacity-40">
-      {/* Animated Background Gradient */}
-      <motion.div
-        animate={{
-          background: [
-            'radial-gradient(circle at 30% 40%, rgba(115, 83, 246, 0.3) 0%, transparent 50%)',
-            'radial-gradient(circle at 70% 60%, rgba(0, 192, 255, 0.3) 0%, transparent 50%)',
-            'radial-gradient(circle at 30% 40%, rgba(115, 83, 246, 0.3) 0%, transparent 50%)'
-          ]
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-        className="absolute inset-0"
-      />
-
-      <div className="relative w-[500px] h-[500px]">
-        {/* Rotating Shield/Lock Shape */}
-        <motion.div
-          animate={{
-            rotateY: [0, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'linear'
-          }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64"
-        >
-          {/* Shield Shape */}
-          <svg viewBox="0 0 100 120" className="w-full h-full">
-            <defs>
-              <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#7353F6', stopOpacity: 0.8 }} />
-                <stop offset="100%" style={{ stopColor: '#00C0FF', stopOpacity: 0.8 }} />
-              </linearGradient>
-            </defs>
-            <motion.path
-              d="M50 5 L90 25 L90 55 Q90 85 50 115 Q10 85 10 55 L10 25 Z"
-              fill="url(#shieldGradient)"
-              stroke="#fff"
-              strokeWidth="2"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2 }}
-            />
-            {/* Lock Icon in Center */}
-            <motion.circle
-              cx="50"
-              cy="50"
-              r="15"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="3"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.rect
-              x="43"
-              y="55"
-              width="14"
-              height="18"
-              rx="2"
-              fill="#fff"
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.circle cx="50" cy="63" r="2" fill="#7353F6" />
-          </svg>
-        </motion.div>
-
-        {/* Orbiting Particles */}
-        {[...Array(12)].map((_, i) => {
-          const angle = (i * 360) / 12;
-          const radius = 150;
-          return (
-            <motion.div
-              key={i}
-              className="absolute w-3 h-3 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full shadow-lg"
-              style={{
-                top: '50%',
-                left: '50%',
-              }}
-              animate={{
-                x: [
-                  Math.cos((angle * Math.PI) / 180) * radius,
-                  Math.cos(((angle + 360) * Math.PI) / 180) * radius,
-                ],
-                y: [
-                  Math.sin((angle * Math.PI) / 180) * radius,
-                  Math.sin(((angle + 360) * Math.PI) / 180) * radius,
-                ],
-                opacity: [0.3, 1, 0.3],
-                scale: [0.8, 1.2, 0.8]
-              }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                delay: i * 0.15,
-                ease: 'linear'
-              }}
-            />
-          );
-        })}
-
-        {/* Concentric Rings */}
-        <motion.div
-          animate={{ rotate: 360, scale: [1, 1.1, 1] }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 border-2 border-purple-400/20 rounded-full"
-        />
-        <motion.div
-          animate={{ rotate: -360, scale: [1, 1.05, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-blue-400/20 rounded-full border-dashed"
-        />
-
-        {/* Floating Data Streams */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={`stream-${i}`}
-            className="absolute w-1 bg-gradient-to-b from-purple-400 to-transparent rounded-full"
-            style={{
-              left: `${20 + i * 15}%`,
-              height: '60px',
-            }}
-            animate={{
-              y: [-100, 600],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              delay: i * 0.5,
-              ease: 'linear'
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -201,49 +58,97 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex" data-testid="login-page">
-      {/* LEFT SECTION - 3D Visual (60%) */}
+      {/* LEFT SECTION - Product introduction */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="hidden lg:flex lg:w-[60%] bg-gradient-to-br from-gray-900 via-purple-900/30 to-gray-900 relative overflow-hidden"
+        className="hidden lg:flex lg:w-[60%] relative overflow-hidden bg-[#080b18] text-white"
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: 'radial-gradient(circle, #7353F6 1px, transparent 1px)',
-          backgroundSize: '50px 50px'
-        }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_15%,rgba(109,72,255,0.22),transparent_38%),radial-gradient(ellipse_at_80%_80%,rgba(30,144,255,0.16),transparent_40%)]" />
+        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(circle, #c4b5fd 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+        <div className="absolute -right-36 top-1/4 h-[30rem] w-[30rem] rounded-full border border-purple-300/10" />
+        <div className="absolute -right-20 top-[30%] h-[22rem] w-[22rem] rounded-full border border-blue-300/10" />
 
-        {/* 3D Security Visualization */}
-        <div className="absolute inset-0">
-          <SecurityVisualization />
-        </div>
-
-        {/* Text Overlay - Centered */}
-        <div className="absolute inset-0 flex items-center justify-center z-20 px-12">
-          <div className="text-center max-w-2xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-5xl md:text-6xl font-bold uppercase text-white mb-6 leading-tight"
-              style={{ fontFamily: 'Bebas Neue' }}
-            >
-              Intelligent Interviews.
-              <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                Real Decisions.
-              </span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="text-lg text-gray-300 mx-auto"
-            >
-              AI-powered agents that screen, evaluate, and shortlist candidates in real-time.
-            </motion.p>
+        <div className="relative z-10 flex w-full flex-col px-10 py-8 xl:px-14 xl:py-10">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-lg font-black shadow-lg shadow-purple-900/40">P</div>
+            <span className="text-lg font-bold tracking-[0.18em]">PANELX</span>
           </div>
+
+          <div className="grid flex-1 grid-cols-[1fr_0.9fr] items-center gap-6 xl:gap-10">
+            <div className="max-w-md">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-purple-200">
+                <Sparkles className="h-3.5 w-3.5" /> AI interview platform
+              </div>
+              <motion.h1
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-4xl font-bold uppercase leading-[1.08] xl:text-5xl"
+                style={{ fontFamily: 'Bebas Neue' }}
+              >
+                Intelligent Interviews.
+                <span className="mt-1 block bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">Real Decisions.</span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, duration: 0.6 }}
+                className="mt-5 max-w-sm text-base leading-7 text-slate-300 xl:text-lg"
+              >
+                AI-powered agents that screen, evaluate, and shortlist candidates in real-time.
+              </motion.p>
+              <div className="mt-8 space-y-3 text-sm text-slate-200">
+                {['Role-based questions', 'Consistent answer evaluation', 'Clear candidate insights'].map((item) => (
+                  <div key={item} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 18, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ delay: 0.25, duration: 0.7 }}
+              className="rounded-3xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl shadow-black/40 backdrop-blur-xl xl:p-6"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" /> Interview preview
+                </div>
+                <span className="rounded-md bg-white/5 px-2 py-1 text-xs text-slate-400">03 / 05</span>
+              </div>
+              <div className="pt-5">
+                <p className="text-xs font-medium uppercase tracking-wider text-purple-300">Question</p>
+                <p className="mt-2 text-lg font-semibold leading-7 text-white xl:text-xl">
+                  Tell me about a challenge you solved and how you approached it.
+                </p>
+              </div>
+              <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span className="flex items-center gap-2"><Mic className="h-4 w-4 text-blue-300" /> Candidate response</span>
+                  <span>00:42</span>
+                </div>
+                <div className="mt-4 flex h-8 items-center gap-1" aria-hidden="true">
+                  {[12, 20, 15, 27, 18, 30, 14, 23, 32, 18, 25, 12, 22, 16, 28, 13, 20, 30, 16, 24, 12, 19, 28, 15, 22, 11].map((height, index) => (
+                    <span key={index} className="flex-1 rounded-full bg-gradient-to-t from-purple-500 to-blue-300 opacity-80" style={{ height: `${height}px` }} />
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between rounded-2xl bg-emerald-400/10 px-4 py-3">
+                <div>
+                  <p className="text-xs text-slate-400">Evaluation status</p>
+                  <p className="mt-0.5 text-sm font-semibold text-emerald-200">Ready for review</p>
+                </div>
+                <CheckCircle2 className="h-5 w-5 text-emerald-300" />
+              </div>
+            </motion.div>
+          </div>
+
+          <p className="text-xs tracking-wide text-slate-500">A more focused interview experience, from first question to final review.</p>
         </div>
       </motion.div>
 
