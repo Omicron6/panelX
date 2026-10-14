@@ -151,7 +151,7 @@ const CreateSession = () => {
         <h1 className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'Bebas Neue' }}>
           Create Interview Session
         </h1>
-        <p className="text-gray-400">Configure dynamic agent generation and preview all questions before launch.</p>
+        <p className="text-gray-300">Configure dynamic agent generation and preview all questions before launch.</p>
       </motion.div>
 
       <motion.div
@@ -171,7 +171,7 @@ const CreateSession = () => {
               value={formData.jobRole}
               onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
               placeholder="e.g., Senior Software Engineer"
-              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all"
               required
               data-testid="job-role-input"
             />
@@ -187,7 +187,7 @@ const CreateSession = () => {
               onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
               placeholder="Paste the full job description used by the agent for dynamic generation."
               rows={5}
-              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all resize-y"
+              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all resize-y"
               required
               data-testid="job-description-input"
             />
@@ -197,10 +197,10 @@ const CreateSession = () => {
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-white font-semibold">
-                  <Upload className="w-5 h-5 text-purple-300" />
+                  <Upload className="w-5 h-5 text-purple-200" />
                   <span>Upload PDF instead</span>
                 </div>
-                <p className="mt-1 text-sm text-gray-400">
+                <p className="mt-1 text-sm text-gray-200">
                   PDF upload and question generation from the file are not connected yet. Paste the description above for now.
                 </p>
               </div>
@@ -215,7 +215,7 @@ const CreateSession = () => {
                 />
               </label>
             </div>
-            {selectedPdfName ? <p className="mt-3 text-sm text-purple-200">Selected: {selectedPdfName} (not uploaded)</p> : null}
+            {selectedPdfName ? <p className="mt-3 text-sm text-purple-100">Selected: {selectedPdfName} (not uploaded)</p> : null}
           </div>
 
           <div>
@@ -228,7 +228,7 @@ const CreateSession = () => {
               value={formData.skills}
               onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
               placeholder="e.g., Python, React, AWS (comma separated)"
-              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all"
               required
               data-testid="skills-input"
             />
@@ -250,7 +250,7 @@ const CreateSession = () => {
                   className={`py-3 px-4 rounded-xl font-bold uppercase transition-all ${
                     formData.companyType === type
                       ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg'
-                      : 'bg-gray-900/50 text-gray-400 border border-gray-700 hover:border-purple-500/50'
+                      : 'bg-gray-900/50 text-gray-300 border border-gray-700 hover:border-purple-500/50'
                   }`}
                   data-testid={`company-type-${type}`}
                 >
@@ -276,7 +276,7 @@ const CreateSession = () => {
                   className={`py-3 px-4 rounded-xl font-bold capitalize transition-all ${
                     formData.difficulty === level
                       ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg'
-                      : 'bg-gray-900/50 text-gray-400 border border-gray-700 hover:border-purple-500/50'
+                      : 'bg-gray-900/50 text-gray-300 border border-gray-700 hover:border-purple-500/50'
                   }`}
                   data-testid={`difficulty-${level}`}
                 >
@@ -299,7 +299,7 @@ const CreateSession = () => {
                   className={`py-3 px-4 rounded-xl font-bold capitalize transition-all ${
                     formData.interviewType === type
                       ? 'bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg'
-                      : 'bg-gray-900/50 text-gray-400 border border-gray-700 hover:border-purple-500/50'
+                      : 'bg-gray-900/50 text-gray-300 border border-gray-700 hover:border-purple-500/50'
                   }`}
                   data-testid={`type-${type}`}
                 >
@@ -400,7 +400,7 @@ const CreateSession = () => {
             <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Bebas Neue' }}>
               Generated Questions Preview
             </h2>
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-300 mt-1">
               Source: {previewMeta?.generation_source || 'strands_tools'} | Company Type: {previewMeta?.company_type}
             </p>
           </div>
