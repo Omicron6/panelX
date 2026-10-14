@@ -171,7 +171,7 @@ const WaveformBars = ({ isActive }) => {
 };
 
 // Pre-Interview Screen
-const PreInterviewScreen = ({ onStart }) => {
+const PreInterviewScreen = ({ onStart, candidateName, onCandidateNameChange }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950/30 to-gray-950 flex items-center justify-center p-6">
       <motion.div
@@ -213,6 +213,20 @@ const PreInterviewScreen = ({ onStart }) => {
           </p>
         </div>
 
+        <div className="mb-6 text-left">
+          <label htmlFor="candidate-name" className="block text-white text-sm font-semibold mb-2">Your name</label>
+          <input
+            id="candidate-name"
+            type="text"
+            value={candidateName}
+            onChange={(event) => onCandidateNameChange(event.target.value)}
+            placeholder="Enter your name"
+            maxLength={100}
+            className="w-full px-4 py-3 rounded-xl bg-gray-900/70 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400"
+            required
+          />
+        </div>
+
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -231,6 +245,9 @@ const Interview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showGuidelines, setShowGuidelines] = useState(true);
+  const [candidateName, setCandidateName] = useState(() =>
+    localStorage.getItem('candidate_name') || (localStorage.getItem('user_email') || '').split('@')[0] || '',
+  );
   const [interviewState, setInterviewState] = useState('speaking');
   const [timeLeft, setTimeLeft] = useState(1800);
   const [currentQuestion, setCurrentQuestion] = useState(1);
@@ -322,7 +339,7 @@ const Interview = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          candidate_name: localStorage.getItem('user_email') || 'Candidate',
+          candidate_name: candidateName.trim() || 'Candidate',
           job_description: 'Software Developer Role with focus on frontend and API development',
           required_skills: ['React', 'JavaScript', 'REST API', 'Problem Solving'],
           candidate_resume: 'Experienced software developer',
@@ -365,7 +382,7 @@ const Interview = () => {
           session_id: currentSessionId || sessionId,
           difficulty,
           question_type: questionType,
-          candidate_name: localStorage.getItem('user_email') || undefined
+          candidate_name: candidateName.trim() || undefined
         })
       });
 
@@ -1000,6 +1017,11 @@ const Interview = () => {
 
   const handleStartInterview = async () => {
     try {
+      if (!candidateName.trim()) {
+        alert('Please enter your name before starting the interview.');
+        return;
+      }
+      localStorage.setItem('candidate_name', candidateName.trim());
       setShowGuidelines(false);
 
       // Enter fullscreen
@@ -1009,8 +1031,7 @@ const Interview = () => {
       const newSessionId = await initializeInterviewSession();
 
       // Spoken interviewer intro, then load the first question
-      const candidateName = (localStorage.getItem('user_email') || '').split('@')[0] || 'there';
-      const intro = `Hello ${candidateName}, welcome to your interview. I'm your AI interviewer today. ` +
+      const intro = `Hello ${candidateName.trim()}, welcome to your interview. I'm your AI interviewer today. ` +
         `I'll ask you a few questions. When you're ready to answer, tap the Speak Answer button and talk naturally. ` +
         `Take your time, and let's begin with the first question.`;
 
@@ -1146,7 +1167,13 @@ const Interview = () => {
   };
 
   if (showGuidelines) {
-    return <PreInterviewScreen onStart={handleStartInterview} />;
+    return (
+      <PreInterviewScreen
+        onStart={handleStartInterview}
+        candidateName={candidateName}
+        onCandidateNameChange={setCandidateName}
+      />
+    );
   }
 
   const getVoiceStatus = () => {

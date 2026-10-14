@@ -266,7 +266,6 @@ async def start_interview(request: InterviewStartRequest):
             candidate_name=request.candidate_name,
             context={}  # Will be filled by agent
         )
-        
         # Get autonomous agent
         agent = get_agent()
         
@@ -285,6 +284,8 @@ async def start_interview(request: InterviewStartRequest):
         
         # Save to database
         session_dict = session.model_dump()
+        if request.candidate_name:
+            session_dict["candidate_name_source"] = "candidate"
         session_dict['created_at'] = session_dict['created_at'].isoformat()
         session_dict['updated_at'] = session_dict['updated_at'].isoformat()
         
@@ -366,6 +367,17 @@ async def generate_question(request: QuestionRequest):
         session_doc = await sessions_collection.find_one({"id": request.session_id})
         if not session_doc:
             raise HTTPException(status_code=404, detail="Session not found")
+
+        # Persist the candidate's entered name as soon as they join, even if AI generation fails.
+        if request.candidate_name and request.candidate_name.strip():
+            await sessions_collection.update_one(
+                {"id": request.session_id},
+                {"$set": {
+                    "candidate_name": request.candidate_name.strip(),
+                    "candidate_name_source": "candidate",
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }}
+            )
         
         # Get autonomous agent
         agent = get_agent()
@@ -379,8 +391,6 @@ async def generate_question(request: QuestionRequest):
         
         # Update session
         update_fields = {"updated_at": datetime.now(timezone.utc).isoformat()}
-        if request.candidate_name:
-            update_fields["candidate_name"] = request.candidate_name.strip()
         await sessions_collection.update_one(
             {"id": request.session_id},
             {

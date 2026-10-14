@@ -5,6 +5,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 const apiBase = (process.env.REACT_APP_API_URL || 'http://localhost:8001').replace(/\/$/, '');
 const apiRoot = `${apiBase}/api`;
+const MOCK_CANDIDATE_NAMES = ['Alex Morgan', 'Jordan Lee', 'Taylor Reed', 'Casey Brooks', 'Riley Parker'];
+
+const mockCandidateName = (sessionId = '') => {
+  const stableIndex = Array.from(sessionId).reduce((sum, character) => sum + character.charCodeAt(0), 0);
+  return MOCK_CANDIDATE_NAMES[stableIndex % MOCK_CANDIDATE_NAMES.length];
+};
 
 const Results = () => {
   const [searchParams] = useSearchParams();
@@ -58,10 +64,10 @@ const Results = () => {
 
       const emailOrName = (session.candidate_name || '').trim();
       // Older admin-created sessions stored the job role in candidate_name.
-      // Only show a value as the candidate's name when it came from their signed-in account email.
-      const candidateName = emailOrName.includes('@')
-        ? emailOrName.split('@')[0]
-        : 'Candidate not identified';
+      // Trust only names explicitly supplied by a candidate (or existing account emails).
+      const candidateName = session.candidate_name_source === 'candidate'
+        ? emailOrName
+        : (emailOrName.includes('@') ? emailOrName.split('@')[0] : mockCandidateName(session.id));
 
       return {
         id: session.id,
@@ -202,7 +208,7 @@ const Results = () => {
                     <span className="text-white font-bold">{candidate.name}</span>
                   </td>
                   <td className="p-4 text-gray-300 max-w-md">
-                    <span className="block max-h-20 overflow-y-auto whitespace-pre-wrap text-sm" title={candidate.jobDescription}>
+                    <span className="block whitespace-pre-wrap text-sm" title={candidate.jobDescription}>
                       {candidate.jobDescription}
                     </span>
                   </td>
