@@ -208,7 +208,16 @@ const Results = () => {
                     <span className="text-white font-bold">{candidate.name}</span>
                   </td>
                   <td className="p-4 text-gray-300 max-w-md">
-                    <span className="block whitespace-pre-wrap text-sm" title={candidate.jobDescription}>
+                    <span
+                      className="block whitespace-pre-wrap text-sm"
+                      style={{
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: 5,
+                        overflow: 'hidden',
+                      }}
+                      title={candidate.jobDescription}
+                    >
                       {candidate.jobDescription}
                     </span>
                   </td>
