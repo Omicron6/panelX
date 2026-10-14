@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, Target, Clock, Zap, Building2, FileText, ListChecks, Loader2 } from 'lucide-react';
+import { Briefcase, Target, Clock, Zap, Building2, FileText, ListChecks, Loader2, Upload } from 'lucide-react';
 
 const apiBase = (process.env.REACT_APP_API_URL || 'http://localhost:8001').replace(/\/$/, '');
 const apiRoot = `${apiBase}/api`;
@@ -31,6 +31,7 @@ const CreateSession = () => {
   const [success, setSuccess] = useState('');
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [selectedPdfName, setSelectedPdfName] = useState('');
 
   const normalizedSkills = useMemo(
     () => formData.skills.split(',').map((item) => item.trim()).filter(Boolean),
@@ -190,6 +191,32 @@ const CreateSession = () => {
               required
               data-testid="job-description-input"
             />
+          </div>
+
+          <div className="rounded-xl border border-dashed border-purple-500/50 bg-purple-500/5 p-5">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-white font-semibold">
+                  <Upload className="w-5 h-5 text-purple-300" />
+                  <span>Upload job description PDF</span>
+                  <span className="rounded-full bg-gray-700 px-2 py-0.5 text-xs text-gray-300">Coming soon</span>
+                </div>
+                <p className="mt-1 text-sm text-gray-400">
+                  PDF upload and question generation from the file are not connected yet. Paste the description above for now.
+                </p>
+              </div>
+              <label className="cursor-pointer rounded-lg border border-gray-600 px-4 py-2 text-sm font-semibold text-white hover:border-purple-400 hover:bg-purple-500/10">
+                Choose PDF
+                <input
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  className="sr-only"
+                  onChange={(event) => setSelectedPdfName(event.target.files?.[0]?.name || '')}
+                  aria-label="Choose a job description PDF"
+                />
+              </label>
+            </div>
+            {selectedPdfName ? <p className="mt-3 text-sm text-purple-200">Selected: {selectedPdfName} (not uploaded)</p> : null}
           </div>
 
           <div>
