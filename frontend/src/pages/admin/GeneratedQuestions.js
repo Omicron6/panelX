@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams, Link } from 'react-router-dom';
 import { ListChecks, RefreshCcw, ArrowRightCircle } from 'lucide-react';
@@ -14,7 +14,7 @@ const GeneratedQuestions = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     try {
       const response = await fetch(`${apiRoot}/interview/sessions?limit=30`);
       const data = await response.json();
@@ -35,11 +35,11 @@ const GeneratedQuestions = () => {
     } catch (err) {
       setError(err.message || 'Failed to fetch sessions.');
     }
-  };
+  }, [searchParams, selectedSessionId, setSearchParams]);
 
   useEffect(() => {
     loadSessions();
-  }, []);
+  }, [loadSessions]);
 
   useEffect(() => {
     const loadSessionDetails = async () => {
