@@ -111,7 +111,6 @@ const CreateSession = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...payload,
-          candidate_name: formData.jobRole,
         }),
       });
       const startData = await startResponse.json();

@@ -158,6 +158,7 @@ class QuestionRequest(BaseModel):
     session_id: str
     difficulty: Optional[str] = "medium"
     question_type: Optional[str] = "technical"
+    candidate_name: Optional[str] = None
 
 
 class AnswerSubmission(BaseModel):
@@ -377,11 +378,14 @@ async def generate_question(request: QuestionRequest):
         )
         
         # Update session
+        update_fields = {"updated_at": datetime.now(timezone.utc).isoformat()}
+        if request.candidate_name:
+            update_fields["candidate_name"] = request.candidate_name.strip()
         await sessions_collection.update_one(
             {"id": request.session_id},
             {
                 "$push": {"questions": question},
-                "$set": {"updated_at": datetime.now(timezone.utc).isoformat()}
+                "$set": update_fields
             }
         )
         

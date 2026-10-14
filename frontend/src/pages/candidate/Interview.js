@@ -364,7 +364,8 @@ const Interview = () => {
         body: JSON.stringify({
           session_id: currentSessionId || sessionId,
           difficulty,
-          question_type: questionType
+          question_type: questionType,
+          candidate_name: localStorage.getItem('user_email') || undefined
         })
       });
 

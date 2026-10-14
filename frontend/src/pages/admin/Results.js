@@ -56,10 +56,17 @@ const Results = () => {
         ? 'Disqualified'
         : (session.final_decision?.decision || (session.status === 'completed' ? 'Completed' : 'In Progress'));
 
+      const emailOrName = (session.candidate_name || '').trim();
+      // Older admin-created sessions stored the job role in candidate_name.
+      // Only show a value as the candidate's name when it came from their signed-in account email.
+      const candidateName = emailOrName.includes('@')
+        ? emailOrName.split('@')[0]
+        : 'Candidate not identified';
+
       return {
         id: session.id,
-        name: session.candidate_name || 'Candidate',
-        role: session.context?.role || 'Unknown Role',
+        name: candidateName,
+        jobDescription: session.context?.job_description || session.context?.role || '—',
         score: overallScore,
         status,
         terminated,
@@ -76,7 +83,7 @@ const Results = () => {
   const filteredCandidates = useMemo(
     () =>
       candidates.filter((c) =>
-        [c.name, c.role, c.id].join(' ').toLowerCase().includes(searchTerm.toLowerCase()),
+        [c.name, c.jobDescription, c.id].join(' ').toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     [candidates, searchTerm],
   );
@@ -172,7 +179,7 @@ const Results = () => {
             <thead>
               <tr className="border-b border-gray-700">
                 <th className="text-left p-4 text-gray-400 font-bold text-sm">Candidate</th>
-                <th className="text-left p-4 text-gray-400 font-bold text-sm">Role</th>
+                <th className="text-left p-4 text-gray-400 font-bold text-sm">Job Description</th>
                 <th className="text-center p-4 text-gray-400 font-bold text-sm">Overall Score</th>
                 <th className="text-center p-4 text-gray-400 font-bold text-sm">Behavior</th>
                 <th className="text-center p-4 text-gray-400 font-bold text-sm">Questions</th>
@@ -194,7 +201,11 @@ const Results = () => {
                   <td className="p-4">
                     <span className="text-white font-bold">{candidate.name}</span>
                   </td>
-                  <td className="p-4 text-gray-300">{candidate.role}</td>
+                  <td className="p-4 text-gray-300 max-w-md">
+                    <span className="block max-h-20 overflow-y-auto whitespace-pre-wrap text-sm" title={candidate.jobDescription}>
+                      {candidate.jobDescription}
+                    </span>
+                  </td>
                   <td className="p-4 text-center text-gray-300">{candidate.score}</td>
                   <td className="p-4 text-center text-gray-300">{candidate.behavioral}</td>
                   <td className="p-4 text-center text-gray-300">{candidate.questionCount}</td>
